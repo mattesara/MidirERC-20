@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Contract</title>
+</head>
+<body>
+    <h1>Trasferimento</h1>
+
+    <form action="{% url 'get_transferFrom' %}" method="POST">
+        {% csrf_token %}
+        <input class="search-box" type='text' placeholder='spender-address' name='spender_address'>
+
+        <input type="text" name="private_key" placeholder="Inserisci la chiave privata" required>
+
+        <input class="search-box" type='text' placeholder='from-address' name='from_address'>
+        
+        <input class="search-box" type='text' placeholder='to-address' name='to_address'>
+
+        <input class="search-box" type='number' placeholder='amount' name='amount'>
+
+        <button type="submit">Invia</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Contract</title>
+</head>
+<body>
+    <h1>Saldo Token</h1>
+
+    <form method="get" action="{% url 'get_balance' %}">
+        {% csrf_token %}
+        <input class="search-box" type='text' placeholder='search address' name='address'>
+        <button type='submit'>Search</button>
+    </form>
+</body>
+</html>

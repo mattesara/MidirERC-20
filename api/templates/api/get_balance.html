@@ -1,0 +1,6 @@
+<h2>Saldo Token</h2>
+{% if address %}
+    <p>Il saldo dell'indirizzo {{ address }} è: {{ balance }}</p>
+{% else %}
+    <p>Nessun risultato trovato.</p>
+{% endif %}

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Contract</title>
+</head>
+<body>
+    <h1>Indennità</h1>
+
+    <form action="{% url 'get_allowance' %}" method="POST">
+        {% csrf_token %}
+
+        <input class="search-box" type='text' placeholder='owner-address' name='owner_address'>
+    
+        <input class="search-box" type='text' placeholder='spender-address' name='spender_address'>
+        <button type="submit">Invia</button>
+    </form>
+</body>
+</html>
