@@ -122,6 +122,16 @@ def get_transferFrom(request):                                                  
         tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
         receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
     
+        transaction_data = {                                                    
+        'id': ObjectId(),                                                       
+        'tx_hash': tx_hash.hex,
+        'sender': from_address,
+        'recipient': to_address,
+        'amount': amount
+    }
+        transaction = Transaction(**transaction_data)
+        transaction.save()
+
         return render(request, 'api/get_transferFrom.html', {'transaction_hash': tx_hash.hex})
     else:
         return redirect('home')
