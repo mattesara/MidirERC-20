@@ -5,6 +5,7 @@ import json
 from .models import *
 from eth_utils import to_checksum_address
 from bson.objectid import ObjectId
+from django.utils import timezone
 
 with open('build/contracts/abi.json', 'r') as abi_file:             #in questo modo carico l'abi del contratto deployato da remix
         info_json = json.load(abi_file)
@@ -12,7 +13,7 @@ with open('build/contracts/abi.json', 'r') as abi_file:             #in questo m
 ganache_url = "http://127.0.0.1:7545"                               #definisco l'url per connettere la blockchain ganache
 w3 = Web3(Web3.HTTPProvider(ganache_url))
 
-contract_address = "0x95Cfd141203a8fDa4FB8410F17256ca73CC0b093"
+contract_address = "0x96812d348AD27Bed018AD40199929e25591c52B6"
 abi = info_json
 
 contract = w3.eth.contract(address=contract_address, abi=abi)
@@ -22,15 +23,15 @@ def home(request):
     return render(request, 'api/home.html')
 
 
-def get_supply(request):                                                        #funzione che permette di visualizzare la supply totale
-    supply = contract.functions.totalSupply().call()                            #del token
+def get_supply(request):                                                        
+    supply = contract.functions.totalSupply().call()                            
     return render(request, 'api/get_supply.html', {'supply': supply})
 
 def balance_view(request):
     return render(request, 'api/balance.html')
 
-def get_balance(request):                                                       #funzione che permette di inserire l'indirizzo di un
-    address = request.GET.get('address')                                        #account per vederne il bilancio di token
+def get_balance(request):                                                       
+    address = request.GET.get('address')                                       
     if address:
         balance = contract.functions.balanceOf(address).call()
         return render(request, 'api/get_balance.html', {'balance': balance, 'address':address})
@@ -40,8 +41,8 @@ def get_balance(request):                                                       
 def allowance(request):
     return render(request, 'api/allowance.html')
 
-def get_allowance(request):                                                     #funzione che permette di visualizzare quanti token può
-    if request.method == 'POST':                                                #spendere un indirizzo per conto di un altro
+def get_allowance(request):                                                     
+    if request.method == 'POST':                                               
         owner_address = request.POST['owner_address']
         spender_address = request.POST['spender_address']
 
@@ -58,8 +59,8 @@ def get_allowance(request):                                                     
 def transfer(request):
     return render(request, 'api/transfer.html')
 
-def get_transfer(request):                                                      #funzione che permette di effettuare transazione
-    if request.method == 'POST':                                                #tra due indirizzi della blockchain
+def get_transfer(request):                                                      
+    if request.method == 'POST':                                                
         private_key = request.POST['private_key']
         from_address = request.POST['from_address']
         to_address = request.POST['to_address']
@@ -85,7 +86,8 @@ def get_transfer(request):                                                      
         'tx_hash': tx_hash.hex,
         'sender': from_address,
         'recipient': to_address,
-        'amount': amount
+        'amount': amount,
+        'date': timezone.now()
     }
         transaction = Transaction(**transaction_data)
         transaction.save()
@@ -98,8 +100,8 @@ def get_transfer(request):                                                      
 def transferFrom(request):
     return render(request, 'api/transferFrom.html')
 
-def get_transferFrom(request):                                                  #funzione di transazione che permette ad un indirizzo
-    if request.method == 'POST':                                                #approvato di effettuare transazioni per conto di un altro
+def get_transferFrom(request):                                                  
+    if request.method == 'POST':                                                
         spender_address = request.POST['spender_address']
         private_key = request.POST['private_key']
         from_address = request.POST['from_address']
@@ -127,7 +129,8 @@ def get_transferFrom(request):                                                  
         'tx_hash': tx_hash.hex,
         'sender': from_address,
         'recipient': to_address,
-        'amount': amount
+        'amount': amount,
+        'date': timezone.now()
     }
         transaction = Transaction(**transaction_data)
         transaction.save()
@@ -139,9 +142,9 @@ def get_transferFrom(request):                                                  
 def approve(request):
     return render(request, 'api/approve.html')
 
-def get_approve(request):                                                           #funzione che permette di approvare un indirizzo
-    if request.method == 'POST':                                                    #ad effettuare transazioni per conto di un altro
-        owner_address = request.POST['owner_address']                               #e di scegliere il budget che il primo può utilizzare
+def get_approve(request):                                                           
+    if request.method == 'POST':                                                    
+        owner_address = request.POST['owner_address']                               
         spender_address = request.POST['spender_address']
         amount = request.POST['amount']
 
