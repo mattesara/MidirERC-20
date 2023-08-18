@@ -13,5 +13,15 @@ urlpatterns = [
     path('transferFrom/', views.transferFrom, name='transferFrom'),
     path('get_transferFrom/', views.get_transferFrom, name='get_transferFrom'),
     path('transfer/', views.transfer, name='transfer'),
-    path('get_transfer/', views.get_transfer, name='get_transfer'),
+    path('burn/', views.burn, name='burn'),
+    path('get_burn/', views.get_burn, name='get_burn'),
+    path('mint/', views.mint, name='mint'),
+    path('get_mint/', views.get_mint, name='get_mint'),
+    path('stake/', views.stake, name='stake'),
+    path('get_stake/', views.get_stake, name='get_stake'),
+    path('withdraw/', views.withdrawStakeAndRewards, name='withdraw'),
+    path('get_withdraw/', views.get_withdraw, name='get_withdraw'),
+    path('staked_balance/', views.stakedBalanceOf, name='staked_balance'),
+    path('get_staked_balance/', views.get_stakedBalanceOf, name='get_staked_balance'),
+    
 ]

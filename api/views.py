@@ -13,7 +13,7 @@ with open('build/contracts/abi.json', 'r') as abi_file:             #in questo m
 ganache_url = "http://127.0.0.1:7545"                               #definisco l'url per connettere la blockchain ganache
 w3 = Web3(Web3.HTTPProvider(ganache_url))
 
-contract_address = "0x96812d348AD27Bed018AD40199929e25591c52B6"
+contract_address = "0x9E345552020A166E4835aD870331473D11Df3cF5"
 abi = info_json
 
 contract = w3.eth.contract(address=contract_address, abi=abi)
@@ -158,6 +158,86 @@ def get_approve(request):
         return render(request, 'api/get_approve.html')
     else:
         return redirect('home')
+    
+def burn(request):
+    return render(request, 'api/burn.html')
+
+def get_burn(request):
+    if request.method == 'POST':
+        sender_address = request.POST['sender_address']
+        amount = request.POST['amount']
+
+        sender_address = to_checksum_address(sender_address)
+        w3.eth.default_account = sender_address
+
+        contract.functions.burn(int(amount)).transact()
+
+        return render(request, 'api/get_burn.html', {'sender_address': sender_address, 'amount': amount})
+    else:
+        return redirect('home')
+
+def mint(request):
+    return render(request, 'api/mint.html')
+
+def get_mint(request):
+    if request.method == 'POST':
+        minter_address = request.POST['minter_address']
+        amount = request.POST['amount']
+
+        minter_address = to_checksum_address(minter_address)
+        w3.eth.default_account = minter_address
+
+        contract.functions.mint(int(amount)).transact()
+
+        return render(request, 'api/get_mint.html', {'minter_address': minter_address, 'amount': amount})
+    else:
+        return redirect('home')
+
+def stake(request):
+    return render(request, 'api/stake.html')
+
+def get_stake(request):
+    if request.method == 'POST':
+        staker_address = request.POST['staker_address']
+        amount = request.POST['amount']
+
+        staker_address = to_checksum_address(staker_address)
+        w3.eth.default_account = staker_address
+
+        contract.functions.stake(int(amount)).transact()
+
+        return render(request, 'api/get_stake.html', {'staker_address': staker_address, 'amount': amount})
+    else:
+        return redirect('home')
+
+def withdrawStakeAndRewards(request):
+    return render(request, 'api/withdraw.html')
+
+def get_withdraw(request):
+    if request.method == 'POST':
+        staker_address = request.POST['staker_address']
+        amount = request.POST['amount']
+
+        staker_address = to_checksum_address(staker_address)
+        w3.eth.default_account = staker_address
+
+        contract.functions.withdrawStakeAndRewards(int(amount)).transact()
+
+        return render(request, 'api/get_withdraw.html', {'staker_address': staker_address, 'amount': amount})
+    else:
+        return redirect('home')
+
+def stakedBalanceOf(request):
+    return render(request, 'api/staked_balance.html')
+
+def get_stakedBalanceOf(request):
+    account = request.GET.get('account')                                       
+    if account:
+        balance = contract.functions.stakedbalanceOf(account).call()
+        return render(request, 'api/get_balance.html', {'balance': balance, 'account':account})
+    else:
+        return redirect('home')
+
      
     
 

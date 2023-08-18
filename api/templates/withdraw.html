@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Contract</title>
+</head>
+<body>
+    <h1>Stake withdraw/h1>
+
+    <form action="{% url 'get_withdraw' %}" method="POST">
+        {% csrf_token %}
+        <input class="search-box" type='text' placeholder='staker-address' name='staker_address'>
+
+        <input class="search-box" type='number' placeholder='amount' name='amount'>
+        <button type="submit">Invia</button>
+    </form>
+</body>
+</html>
