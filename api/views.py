@@ -13,7 +13,7 @@ with open('build/contracts/abi.json', 'r') as abi_file:             #in questo m
 ganache_url = "http://127.0.0.1:7545"                               #definisco l'url per connettere la blockchain ganache
 w3 = Web3(Web3.HTTPProvider(ganache_url))
 
-contract_address = "0x9E345552020A166E4835aD870331473D11Df3cF5"
+contract_address = "0x8e2BCef8d75B94E967A789c353d57B305404EC70"
 abi = info_json
 
 contract = w3.eth.contract(address=contract_address, abi=abi)
@@ -231,10 +231,10 @@ def stakedBalanceOf(request):
     return render(request, 'api/staked_balance.html')
 
 def get_stakedBalanceOf(request):
-    account = request.GET.get('account')                                       
-    if account:
-        balance = contract.functions.stakedbalanceOf(account).call()
-        return render(request, 'api/get_balance.html', {'balance': balance, 'account':account})
+    address = request.GET.get('address')                                       
+    if address:
+        balance = contract.functions.stakedBalanceOf(address).call()
+        return render(request, 'api/get_balance.html', {'balance': balance, 'address': address})
     else:
         return redirect('home')
 

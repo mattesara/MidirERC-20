@@ -30,7 +30,6 @@ contract Midir is IERC20 {
     uint256 private _totalStaked;
     uint256 private _totalRewards;
     struct StakingRecord {
-    uint256 stakedAmount;
     uint256 startTime;
 }
     mapping(address => StakingRecord) private _stakingRecords;
@@ -131,7 +130,7 @@ contract Midir is IERC20 {
         _balances[staker] -= amount;
         _stakes[staker] += amount;
         _totalStaked += amount;
-        _stakingRecords[staker] = StakingRecord(amount, block.timestamp);
+        _stakingRecords[staker] = StakingRecord(block.timestamp);
     }
 
     // Funzione per ritirare una quantità specifica dal deposito di staking e ricevere le ricompense basate sul tempo
@@ -139,10 +138,9 @@ contract Midir is IERC20 {
         address staker = msg.sender;
         StakingRecord storage record = _stakingRecords[staker];
 
-        require(record.stakedAmount > 0, "No staked amount");
-        require(amount <= record.stakedAmount, "Amount exceeds staked balance");
+        require(_stakes[staker] > 0, "No staked amount");
+        require(amount <= _stakes[staker], "Amount exceeds staked balance");
 
-        uint256 stakedAmount = record.stakedAmount;
         uint256 startTime = record.startTime;
         uint256 endTime = block.timestamp;
 
@@ -151,7 +149,7 @@ contract Midir is IERC20 {
         uint256 annualInterestRate = 5;
 
         // Calcolo le ricompense in base al tempo trascorso
-        uint256 rewardRate = (stakedAmount * annualInterestRate) / (100 * 365 days);
+        uint256 rewardRate = (amount * annualInterestRate) / (100 * 365 days);
         uint256 stakerReward = rewardRate * elapsedTime;
 
         // Distribuisco le ricompense allo staker
@@ -159,10 +157,14 @@ contract Midir is IERC20 {
         _balances[staker] += stakerReward;
 
         // Eseguo il ritiro dello staking
-        _stakingRecords[staker] = StakingRecord(0, 0);
         _totalStaked -= amount;
         _balances[staker] += amount;
+        _stakes[staker] -= amount;
         stakerReward = 0;
+        if (_stakes[staker] == 0) {
+            record.startTime = 0;
+            startTime = 0;
+        }
 
 
          // Emetto gli eventi per il ritiro e la distribuzione delle ricompense
